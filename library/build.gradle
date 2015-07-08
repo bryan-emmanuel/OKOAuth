@@ -45,7 +45,6 @@ publishing {
             // include dependencies
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
-                println project.configurations.compile.properties
                 project.configurations.compile.allDependencies.each { dep ->
                     // fabric returns null for these values, so skip it
                     if (dep.group?.trim() && dep.name?.trim() && dep.version?.trim()) {
