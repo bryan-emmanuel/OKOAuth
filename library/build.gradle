@@ -44,6 +44,25 @@ publishing {
 
             // include dependencies
             pom.withXml {
+                asNode().appendNode('name', "${rootProject.name}")
+                asNode().appendNode('description', 'OAuth 1.0(a) using OKHttp')
+                asNode().appendNode('url', 'https://github.com/piusvelte/OKOAuth')
+
+                def license = asNode().appendNode('licenses').appendNode('license')
+                license.appendNode('name', 'The Apache License, Version 2.0')
+                license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+
+                def developer = asNode().appendNode('developers').appendNode('developer')
+                developer.appendNode('name', 'Bryan Emmanuel')
+                developer.appendNode('email', 'piusvelte@gmail.com')
+                developer.appendNode('organization')
+                developer.appendNode('organizationUrl')
+
+                def scm = asNode().appendNode('scm')
+                scm.appendNode('connection', 'scm:git:git@github.com:piusvelte/OKOAuth.git')
+                scm.appendNode('developerConnection', 'scm:git:git@github.com:piusvelte/OKOAuth.git')
+                scm.appendNode('url', 'git@github.com:piusvelte/OKOAuth.git')
+
                 def dependenciesNode = asNode().appendNode('dependencies')
                 project.configurations.compile.allDependencies.each { dep ->
                     // fabric returns null for these values, so skip it
