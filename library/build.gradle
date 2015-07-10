@@ -41,6 +41,10 @@ publishing {
             artifactId rootProject.name
 
             artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar.asc") {
+                classifier = null
+                extension = 'aar.asc'
+            }
 
             // include dependencies
             pom.withXml {
@@ -82,9 +86,40 @@ publishing {
                     }
                 }
             }
+
+            artifact("$buildDir/publications/${rootProject.name}/${rootProject.name}-${project.version}.pom.asc") {
+                classifier = null
+                extension = 'pom.asc'
+            }
         }
     }
 
     repositories {
+    }
+}
+
+apply plugin: 'signing'
+
+def pgpsigning = System.properties['user.home'] + '/.signing/pgp-signing.gradle';
+if (new File(pgpsigning).exists()) {
+    apply from: pgpsigning
+}
+
+task signPom(type: Sign) {
+    file("$buildDir/publications/${rootProject.name}/pom-default.xml").renameTo(file("$buildDir/publications/${rootProject.name}/${rootProject.name}-${project.version}.pom"))
+    sign file("$buildDir/publications/${rootProject.name}/${rootProject.name}-${project.version}.pom")
+}
+
+task signAar(type: Sign) {
+    sign file("$buildDir/outputs/aar/${project.name}-release.aar")
+}
+
+model {
+    tasks.signPom {
+        dependsOn 'generatePomFileForOKOAuthPublication'
+    }
+
+    tasks.signAar {
+        dependsOn 'assembleRelease'
     }
 }
